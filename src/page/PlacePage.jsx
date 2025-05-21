@@ -1,111 +1,88 @@
-import React from 'react';
-import Header from '../components/LayoutComponents/Header';
-import Footer from '../components/LayoutComponents/Footer';
-import { getAllCategoriesService, getAllPlacesService, getPlacesByCategoryService,
-    getPlacesByCategoryAndCooridinateDistService,
-    getOpenPlacesByCategoryService,getPlacesByKeywordService,
-    getOpenPlacesByCategoryAndDistService } from '../api/PlaceService';
-import { convertAddressToCoordinateService, getRouteInfoService } from '../api/LocationService';
-import classes from "./PlacePage.module.css";
+import React, { useEffect, useState } from 'react';
+import Header from "../components/LayoutComponents/Header";
+import Footer from "../components/LayoutComponents/Footer";
+
+import PlaceMap from '../components/PlacePageComponents/PlaceMap';
+import EmergencyButton from '../components/PlacePageComponents/EmergencyForm';
 import FilterForm from '../components/PlacePageComponents/FilterForm';
 import KeywordForm from '../components/PlacePageComponents/KeywordForm';
-import PlaceMap from '../components/PlacePageComponents/PlaceMap';
+import Modal from '../components/PlacePageComponents/PlaceModal';
+import classes from './PlacePage.module.css';
 
-const myHomeCoordinate = { latitude: 37.2906870184418, longitude: 126.994990959844 };
-const dkCoordinate = {latitude: 37.3211938747541, longitude: 127.132535935195};
-const dkAddress = "경기도 용인시 수지구 죽전로 152";
-
-const naverMapURL = "http://map.naver.com/index.nhn?";
- 
-const slng = 126.994990959844;
-const slat = 37.2906870184418;
-const elng = 127.132535935195;
-const elat = 37.3211938747541;
-const etext = "단국대학교";
-
-const routeNaverUrl = `
-    ${naverMapURL}slng=${slng}&slat=${slat}&stext=${'현재 위치'}&elng=${elng}&elat=${elat}&pathType=1&showMap=false&etext=${etext}&menu=route"
-`;    
+const DEFAULT_COORDINATE = { latitude: 37.3211, longitude: 127.1325 };
 
 const PlacePage = () => {
+  const [center, setCenter] = useState(DEFAULT_COORDINATE);
+  const [places, setPlaces] = useState([]);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isKeywordOpen, setIsKeywordOpen] = useState(false);
+  const [isLocationModalOpen, setIsLocationModalOpen] = useState(true); // 최초 진입 시 모달 열림
 
-    const openMapHandler= () => {
-        window.open(routeNaverUrl, "naverMap","width=355,height=700,scrollbars=yes,resizable=yes,menubar=no,toolbar=no,status=no");
-    };
+  // 사용자가 위치 허용을 클릭했을 때
+  const handleAllowLocation = () => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        setCenter({ latitude, longitude });
+        setIsLocationModalOpen(false); // 모달 닫기
+      },
+      (error) => {
+        console.warn("위치 권한 거부됨. 기본 위치 사용");
+        setIsLocationModalOpen(false);
+      }
+    );
+  };
 
-    const getAllCategoriesHandler = async () => {
-        const allCategoriesResponse = await getAllCategoriesService();
-        console.log(allCategoriesResponse);
-    };
-    const getAllPlacesHandler = async () => {
-        const allPlacesResponse = await getAllPlacesService();
-        console.log(allPlacesResponse);
-    };
-    const getPlacesByCategoryHandler = async () => {
-        const placeResponse = await getPlacesByCategoryService("여행지");
-        console.log(placeResponse);
-    };
-    const getOpenPlacesByCategoryHandler = async () => {
-        const placeResponse = await getOpenPlacesByCategoryService("동물약국");
-        console.log(placeResponse);
-    };
-    const getOpenPlacesByCategoryAndDistHandler = async () => {
-        const placeResponse = await getOpenPlacesByCategoryAndDistService("동물약국",dkCoordinate);
-        console.log(placeResponse);
-    };
+  // 사용자가 거부를 클릭했을 때
+  const handleDenyLocation = () => {
+    setCenter(DEFAULT_COORDINATE); // 기본 좌표 유지
+    setIsLocationModalOpen(false);
+  };
 
-    const getPlacesByCategoryAndCooridinateDistHandler = async () => {
-        const placeResponse = await getPlacesByCategoryAndCooridinateDistService("동물약국",dkCoordinate);
-        console.log(placeResponse)
-    };
-    const getPlacesByKeywordHandler = async () => {
-        const placeResponse = await getPlacesByKeywordService("약국");
-        console.log(placeResponse);
-    };
+  return (
+    
+    <div className={classes.map_page_wrapper}>
 
-    const convertToCoordinateHandler = async () => {
-        const coordinteResponse = await convertAddressToCoordinateService({ address : dkAddress });
-        console.log(coordinteResponse);
-    };
-    const getRouteHandler = async () => {
-        const locationRequest = {
-            startLatitude : myHomeCoordinate.latitude,
-            startLongitude : myHomeCoordinate.longitude,
-            endLatitude : dkCoordinate.latitude,
-            endLongitude : dkCoordinate.longitude
-        }
-        const routeResponse = await getRouteInfoService(locationRequest);
-        console.log(routeResponse);
-    };
+      <Header/>
+      {/* 위치 권한 요청 모달 */}
+      <Modal isOpen={isLocationModalOpen} onClose={() => {}}>
+        <div className={classes.modalContent}>
+          <h3>위치 정보 제공</h3>
+          <p>현재 위치를 사용하여 주변 장소를 검색하시겠습니까?</p>
+          <button onClick={handleAllowLocation}>예, 위치 사용</button>
+          <button onClick={handleDenyLocation}>아니요, 기본 위치 사용</button>
+        </div>
+      </Modal>
 
-    return (
-        <>
-            <Header/>
-            <PlaceMap coordinate={dkCoordinate}/>
-            <div className={classes.place_container}>
-            <h1 className={classes.place_header}>Place Page</h1>
-                <div className={classes.formsAndButtonsContainer}>
-                    <div className={classes.formsContainer}>
-                        <KeywordForm />
-                        <FilterForm />
-                    </div>
-                    <div className={classes.buttonsContainer}>
-                        <button className={classes.button} onClick={getAllCategoriesHandler}>1. What Categories?</button>
-                        <button className={classes.button} onClick={getAllPlacesHandler}>2. All Places</button>
-                        <button className={classes.button} onClick={getPlacesByCategoryHandler}>3. Category Places</button>
-                        <button className={classes.button} onClick={getOpenPlacesByCategoryHandler}>4. Get Open Places By Category</button>
-                        <button className={classes.button} onClick={getOpenPlacesByCategoryAndDistHandler}>5. Get Open Places By Category And Sorting By Coordinate</button>
-                        <button className={classes.button} onClick={getPlacesByCategoryAndCooridinateDistHandler}>6. Get Places By Category And Sorting By Coordinate</button>
-                        <button className={classes.button} onClick={getPlacesByKeywordHandler}>7. Get Places By Keyword</button>
-                        <button className={classes.button} onClick={convertToCoordinateHandler}>8. Get Coordinate</button>
-                        <button className={classes.button} onClick={getRouteHandler}>9. Get RouteInfo</button>
-                        <button onClick={openMapHandler} className={classes.button}>10. Naver Map</button>
-                    </div>
-                </div>
-            </div>
-            <Footer/>
-        </>
-    )
+      <div className={classes.button_panel}>
+        <EmergencyButton onSetPlaces={setPlaces} />
+        <button onClick={() => setIsFilterOpen(true)}> 필터 선택</button>
+        <button onClick={() => setIsKeywordOpen(true)}> 주소 입력</button>
+      </div>
+
+      <PlaceMap coordinate={center} places={places} />
+
+      <Modal isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)}>
+        <FilterForm
+          onSetPlaces={(data) => {
+            setPlaces(data);
+            setIsFilterOpen(false);
+          }}
+        />
+      </Modal>
+
+      <Modal isOpen={isKeywordOpen} onClose={() => setIsKeywordOpen(false)}>
+        <KeywordForm
+          onSelectPlace={(place) => {
+            setCenter({ latitude: place.latitude, longitude: place.longitude });
+            setPlaces([place]);
+            setIsKeywordOpen(false);
+          }}
+        />
+      </Modal>
+      <Footer/>
+    </div>
+  );
 };
 
 export default PlacePage;

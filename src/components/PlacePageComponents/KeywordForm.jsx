@@ -1,145 +1,59 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { getPlacesByKeywordService } from '../../api/PlaceService';
+import { motion, AnimatePresence } from 'framer-motion';
 import classes from './KeywordForm.module.css';
-
 
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
-
   useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
-
-    return () => {
-      clearTimeout(handler);
-    };
+    const timer = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(timer);
   }, [value, delay]);
-
   return debouncedValue;
 };
 
-const KeywordForm = () => {
+const KeywordForm = ({ onSelectPlace }) => {
   const [query, setQuery] = useState('');
   const debouncedQuery = useDebounce(query, 400);
   const [results, setResults] = useState([]);
-  const [displayedResults, setDisplayedResults] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [page, setPage] = useState(1);
-  const [noResultsMessageVisible, setNoResultsMessageVisible] = useState(false);
-  const [initialMessageVisible, setInitialMessageVisible] = useState(true);
-  const observerRef = useRef(null);
-
-  const goPlaceDetailHandler = (place) => {
-    console.log(place);
-  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (debouncedQuery.trim() === '') {
-        setResults([]); 
-        setDisplayedResults([]); 
-        setNoResultsMessageVisible(false);
-        setInitialMessageVisible(true);
+    const fetch = async () => {
+      if (!debouncedQuery.trim()) {
+        setResults([]);
         return;
       }
-  
-      setLoading(true);
-      setError(null);
-      setInitialMessageVisible(false);
-      try {
-        const placeResponse = await getPlacesByKeywordService(debouncedQuery);
-        if (placeResponse.success) {
-          setResults(placeResponse.data.places);
-          setDisplayedResults(placeResponse.data.places.slice(0, 20));
-          setNoResultsMessageVisible(placeResponse.data.places.length === 0); 
-        } else {
-          setError('검색 결과를 불러오는데 실패했습니다.');
-        }
-      } catch (err) {
-        setError('검색 중 오류가 발생했습니다.');
-      }
-      setLoading(false);
+      const response = await getPlacesByKeywordService(debouncedQuery);
+      if (response.success) setResults(response.data.places);
     };
-    fetchData();
+    fetch();
   }, [debouncedQuery]);
-
-  useEffect(() => {
-    if (results.length === 0) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && displayedResults.length < results.length) {
-          const nextPage = page + 1;
-          setPage(nextPage);
-          setDisplayedResults(results.slice(0, nextPage * 20));
-        }
-      },
-      { threshold: 1.0 }
-    );
-
-    if (observerRef.current) observer.observe(observerRef.current);
-
-    return () => observer.disconnect();
-  }, [results, displayedResults, page]);
 
   return (
     <div className={classes.searchContainer}>
       <input
-        type="text"
-        value={query}
-        onChange={e => setQuery(e.target.value)}
-        placeholder="장소 이름을 검색해주세요."
         className={classes.searchInput}
+        placeholder="장소나 지역명을 검색하세요"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
       />
       <div className={classes.resultsContainer}>
-        {loading && <p className={classes.loadingText}>검색 중입니다...</p>}
-        {error && <p className={classes.errorText}>{error}</p>}
-
         <AnimatePresence>
-          {initialMessageVisible && (
-            <motion.p
-              className={classes.noResultsText}
+          {results.map((place, idx) => (
+            <motion.div
+              key={place.id}
+              className={classes.resultItem}
+              onClick={() => onSelectPlace(place)}
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.3, delay: idx * 0.05 }}
             >
-              검색어를 입력해보세요!
-            </motion.p>
-          )}
-          {!loading && !error && noResultsMessageVisible && (
-            <motion.p
-              className={classes.noResultsText}
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              transition={{ duration: 0.3 }}
-            >
-              검색 결과가 존재하지 않습니다.
-            </motion.p>
-          )}
+              <div className={classes.placeName}>{place.placeName}</div>
+              <div className={classes.regionCode}>{place.regionCode}</div>
+            </motion.div>
+          ))}
         </AnimatePresence>
-        <AnimatePresence>
-            {!loading && !error && displayedResults.map((result, index) => (
-                <motion.div
-                onClick={() => goPlaceDetailHandler(result)}
-                key={result.id}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 10 }}
-                transition={{ duration: 0.3, delay: index * 0.05 }}
-                className={classes.resultItem}
-                >
-                <div className={classes.placeName}>{result.placeName}</div>
-                <div className={classes.regionCode}>{result.regionCode}</div>
-                </motion.div>
-            ))}
-        </AnimatePresence>
-        
-        <div ref={observerRef} />
       </div>
     </div>
   );

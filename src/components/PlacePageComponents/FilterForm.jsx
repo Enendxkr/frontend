@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import classes from './FilterForm.module.css';
 import { getPlacesByFilterService } from '../../api/PlaceService';
 import { toast } from 'react-toastify';
+import classes from './FilterForm.module.css';
 
-const FilterForm = () => {
+const FilterForm = ({ onSetPlaces }) => {
   const [formData, setFormData] = useState({
     placeName: '',
     category: '',
@@ -13,50 +13,35 @@ const FilterForm = () => {
     isOutside: false,
   });
 
-  const categories = [
-    '동물병원',
-    '반려동물용품',
-    '여행지',
-    '미용',
-    '동물약국',
-  ];
+  const categories = ['동물병원', '반려동물용품', '여행지', '미용', '동물약국'];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleToggle = (e) => {
     const { name, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: checked,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: checked }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.category) {
-      toast.error("Category is required.", {
-          position: "top-center",
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: true,
-          progress: undefined,
-      });
+      toast.error('카테고리를 선택해주세요.');
       return;
     }
-    const placeResponse = await getPlacesByFilterService(formData);
-    console.log(placeResponse);
+
+    const response = await getPlacesByFilterService(formData);
+    if (response.success) {
+      onSetPlaces(response.data.places);
+    } else {
+      toast.error('필터 검색 실패');
+    }
   };
 
   return (
-    <form className={classes.filterForm} onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className={classes.filterForm}>
       <div className={classes.formGroup}>
         <label htmlFor="placeName">Place Name</label>
         <input 
