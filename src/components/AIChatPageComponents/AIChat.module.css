@@ -3,33 +3,38 @@
     flex-direction: column;
     height: 100%;
     padding: 24px;
-    background-color: #202123;
+    background-color: #1e1e2e;
     color: white;
     overflow: hidden;
     border-radius: 20px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
-.no_chat_message{
+
+.no_chat_message {
     font-weight: bold;
-    margin:30px 0;
+    margin: 30px 0;
     text-align: center;
+    color: white;
 }
+
 .wrapper h1 {
     text-align: center;
     margin: 20px 0 40px 0;
     font-size: 30px;
-    color: #f0f0f0;
+    color: white;
     font-weight: bold;
 }
+
 .chat_wrapper {
     display: flex;
     flex: 1;
-    background-color: #343541;
+    background-color: #2a2a3d;
     flex-direction: column;
     overflow: hidden;
     border-radius: 16px;
-    box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.05);
+    box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.03);
 }
+
 .chat_container {
     display: flex;
     flex-direction: column;
@@ -37,30 +42,28 @@
     padding: 20px;
     flex: 1;
 }
+
 .chat_container::-webkit-scrollbar {
     width: 8px;
 }
-
 .chat_container::-webkit-scrollbar-track {
-    background: #2b2b2f;
+    background: #262638;
     border-radius: 10px;
 }
-
 .chat_container::-webkit-scrollbar-thumb {
-    background-color: #555;
+    background-color: #6c63a7;
     border-radius: 10px;
-    border: 2px solid #2b2b2f;
+    border: 2px solid #262638;
 }
-
 .chat_container::-webkit-scrollbar-thumb:hover {
-    background-color: #777;
+    background-color: #857dc4;
 }
 
 .chat_header_container {
     display: flex;
     gap: 12px;
     padding: 10px 0 16px 0;
-    border-bottom: 1px solid #4f4f4f;
+    border-bottom: 1px solid #4c487a;
 }
 
 .chat_main_image {
@@ -72,7 +75,7 @@
 
 .chat_main_text {
     font-size: 15px;
-    color: #b0b0b0;
+    color: white;
     line-height: 1.5;
 }
 
@@ -87,19 +90,19 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    background-color: #40414f;
+    background-color: #35324a;
     border-radius: 14px;
     padding: 14px;
 }
 
 .question_container {
-    background-color: #2a2b32;
+    background-color: #2f2c42;
     border-radius: 10px;
     padding: 12px;
 }
 
 .question_text {
-    color: #e3e3e3;
+    color: white;
     font-size: 15px;
     white-space: pre-wrap;
     word-break: break-word;
@@ -107,30 +110,34 @@
 }
 
 .answer_container {
-    background-color: #3e3f4b;
+    background-color: #3a3653;
     border-radius: 10px;
     padding: 12px;
 }
 
 .answer {
     font-weight: bold;
-    color: #10a37f;
+    color: white;
     margin-bottom: 6px;
 }
-.answer_text{
+
+.answer_text {
     word-break: keep-all;
+    color: #eaeaff;
 }
+
 .loading_text {
-    margin:30px 0;
+    margin: 30px 0;
     text-align: center;
     font-size: 16px;
-    color: #cccccc;
+    color: #bcb8df;
 }
+
 .input_container {
     margin-top: 16px;
     padding: 20px 0;
-    background-color: #343541;
-    border-top: 1px solid #4f4f4f;
+    background-color: #2a2a3d;
+    border-top: 1px solid #4c487a;
 }
 
 .gemini_input {
@@ -141,7 +148,7 @@
     font-size: 14px;
     padding: 12px 14px;
     border-radius: 10px;
-    background-color: #3c3f4a;
+    background-color: #3d3957;
     color: white;
     border: none;
     outline: none;
@@ -150,5 +157,5 @@
 }
 
 .gemini_input::placeholder {
-    color: #aaa;
+    color: #aaa6cc;
 }

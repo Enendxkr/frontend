@@ -289,7 +289,7 @@ const Chat = (props) => {
                             </div>
                             {group.messages.map((message, msgIndex) => (
                                 message.memberId === memberId ? (
-                                    <motion.div key={msgIndex}
+                                     <motion.div key={msgIndex}
                                             className={classes.chat_my_message_container}
                                             initial={{ opacity: 0, y: 10 }}
                                             animate={{ opacity: 1, y: 0 }}
@@ -308,7 +308,7 @@ const Chat = (props) => {
                                             initial={{ opacity: 0, y: 10 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ duration: 0.3 }}>
-                                        <p className={classes.name}>{message.name}님</p>
+                                        <p className={classes.name}>{message.name}</p>
                                         <div className={classes.chat_display}>
                                             <div className={`${classes.chat_message} ${classes.chat_message_other}`}>
                                                 {message.content}

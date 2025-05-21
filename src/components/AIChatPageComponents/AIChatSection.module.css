@@ -1,48 +1,49 @@
 .chatSection {
-    background-color: #2a2b32;
+    background-color: #e3e0f8;
     padding: 16px;
     border-radius: 12px;
     display: flex;
     flex-direction: column;
     gap: 8px;
-    color: #ffffff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    color: #3d347a;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     transition: background-color 0.2s ease;
 }
 
 .chatSection:hover {
-    background-color: #343541;
+    background-color: #d4d0f2; 
 }
 
 .chatSection h2 {
     font-size: 16px;
     margin: 0;
     word-break: break-word;
+    color: #4b3da8;
 }
 
 .chatSection p {
     font-size: 12px;
-    color: #aaa;
+    color: #6c64aa;
     margin: 0;
 }
 
 .chatSection input {
     padding: 8px 12px;
     font-size: 14px;
-    border: none;
+    border: 1px solid #cbc7ee;
     border-radius: 8px;
     outline: none;
-    background-color: #3f4049;
-    color: white;
+    background-color: #f8f7ff;
+    color: #333;
 }
 
 .chatSection input:focus {
-    outline: 2px solid #10a37f;
+    outline: 2px solid #9e96e5;
 }
 
 .chatSection button {
-    background-color: #444654;
-    color: white;
+    background-color:rgb(66, 51, 182);
+    color: #fff;
     border: none;
     border-radius: 6px;
     padding: 8px 10px;
@@ -52,5 +53,5 @@
 }
 
 .chatSection button:hover {
-    background-color: #565869;
+    background-color: #a29ae4;
 }

@@ -156,7 +156,7 @@ const AIChatList = () => {
                     >
                         + 새로운 AI 채팅
                     </motion.button>
-                    <h1 className={classes.chat_list_header}>{name}님 채팅 리스트</h1>
+                    <h1 className={classes.chat_list_header}></h1>
                     <AnimatePresence>
                         {chatSections.length !== 0 ? (
                             chatSections.map((section) => (
@@ -212,7 +212,7 @@ const AIChatList = () => {
                             transition={{ delay: 0.4, duration: 0.6 }}>
                                 새로운 채팅방을 생성하여 궁금한 점을 물어보세요! <br/>
                                 반려동물 건강 정보 및 케어에 대한 다양한 정보를 얻을 수 있어요. <br/>
-                                <span style={{ color: '#10a37f', fontWeight: 'bold' }}>
+                                <span style={{ color: 'rgb(56, 43, 160)', fontWeight: 'bold' }}>
                                     본 답변은 반려동물 건강 정책 자료를 기반으로 생성됩니다.
                                 </span>
                         </motion.div>

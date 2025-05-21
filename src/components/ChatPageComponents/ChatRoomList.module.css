@@ -48,7 +48,7 @@
     height:100%;
 }
 .chatRoom_header_text {
-    padding-left:30px;
+    margin:0 auto;
     font-size: 28px;
     font-weight: bold;
     color: rgb(66, 51, 182);
@@ -275,4 +275,19 @@
     font-weight: bold;
     color:rgb(66, 51, 182);
     font-size:18px;
+}
+.allChatButton, .keywordChatButton{
+    font-weight: bold;
+    background-color: rgb(66, 51, 182);
+    border-radius: 8px;
+    padding:10px 20px;
+    border:none;
+    color:white;
+}
+.buttonContainer{
+    margin:0 auto;
+    display: flex;
+    justify-content: center;
+    gap:20px;
+    margin-bottom: 20px;
 }

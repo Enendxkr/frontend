@@ -6,6 +6,7 @@ import ChatImg from "../../assets/chat.png";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-toastify";
 import Loading from "../LayoutComponents/Loading";
+import KeywordRoomForm from "./KeywordRoomForm";
 
 const AllChatRoomList = (props) => {
 
@@ -15,7 +16,11 @@ const AllChatRoomList = (props) => {
     const [isError,setIsError] = new useState(false);
     const [errorMessage,setErrorMessage] = new useState('');
     const [isSubmit, setIsSubmit] = new useState(false);
-
+    const [type,setType] = useState(1);
+    
+    const typeChangeHandler = (type) => {
+        setType(type);
+    };
     const titleChangeHandler = (event) => {
         setTitle(event.target.value);
         setIsError(false);
@@ -133,82 +138,97 @@ const AllChatRoomList = (props) => {
         <React.Fragment>
             {isSubmit && <Loading/>}
             <div className={classes.all_chatRoom_container}>
-                <h2 className={classes.chatRoom_header_text}>All ChatRooms</h2>
-                {chatRooms.length > 0 && (
-                    <ul className={classes.chatRoom_list}>
-                        <AnimatePresence>
-                            {chatRooms.map((item) => {
-                                return (
-                                    <div key={item.roomId} className={classes.chatRoom_box_container}>
-                                        <motion.div 
-                                            className={classes.chatRoom_box} 
-                                            initial={{ opacity: 0, x: -100 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            exit={{ opacity: 0, x: 100 }}
-                                            transition={{ duration: 0.5, ease: "easeOut" }}
-                                        >
-                                            <div className={classes.chatRoom_card}>
-                                                <div className={classes.chatRoom_header}>
-                                                    <h3 className={classes.chatRoom_title}>{item.title}</h3>
-                                                    <img className={classes.chatRoom_image} src={ChatImg} alt="chat_img" />
-                                                </div>
-                                                <div className={classes.chatRoom_info}>
-                                                    {item.isParticipate ? <p className={classes.chatRoom_isOpen}>참여중</p> : <p className={classes.chatRoom_isOpen}>참여 가능</p>}
-                                                    <p className={classes.chatRoom_members}>{item.memberCount}명 참여</p>
-                                                    <p className={classes.chatRoom_date}>{item.createdDateTime.split('T')[0]}</p>
-                                                </div>
-                                                {!item.isParticipate && (
-                                                    <div className={classes.chatRoom_buttons}>
-                                                        <button 
-                                                            onClick={() => participateNewChatRoomHandler(item.roomId)}
-                                                            className={classes.chatRoom_joinButton}>참여하기</button>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </motion.div>
-                                    </div>
-                                    )
-                            })}
-                        </AnimatePresence>
-                    </ul>
-                )}
-                {chatRooms.length === 0 && 
-                <motion.p 
-                    className={classes.no_room_message}
-                    initial={{ opacity: 0, x: -100 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 100 }}
-                    transition={{ duration: 0.5, ease: "easeOut" }}>
-                        아직 등록된 채팅방이 없습니다. <br/>
-                        채팅방을 등록해보세요!
-                </motion.p>}
-                <div className={classes.createRoom_container_box}>
-                    <div className={classes.createRoom_container}>
-                        <p className={classes.createRoom_description}>찾으시는 채팅방이 없으신가요? <br/> 원하는 채팅방을 만들어보세요.</p>
-                        <h3 className={classes.createRoom_title}>채팅방 제목을 입력을 입력하세요.</h3>
-                        <input 
-                            onChange={titleChangeHandler}
-                            className={classes.createRoom_title_input} 
-                            type='text' value={title}/>
-                        <AnimatePresence>
-                            {isError && (
-                                <motion.p
-                                    className={classes.error_message}
-                                    initial={{ opacity: 0, y: -5 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -5 }}
-                                >
-                                    {errorMessage}
-                                </motion.p>
-                            )}
-                        </AnimatePresence>
-                        <motion.button 
-                            whileHover={{ scale : 1.05 }} 
-                            className={classes.createRoom_submit_button} 
-                            onClick={createRoomHandler}>
-                                채팅방 만들기</motion.button>
-                    </div>
+                <h2 className={classes.chatRoom_header_text}>ChatRooms</h2>
+                <div className={classes.buttonContainer}>
+                    <motion.button 
+                        whileHover={{ scale : 1.05 }}
+                        className={classes.allChatButton} onClick={() => typeChangeHandler(1)}>전체 채팅방</motion.button>
+                    <motion.button 
+                        whileHover={{ scale : 1.05 }} 
+                        className={classes.keywordChatButton} onClick={() => typeChangeHandler(2)}>키워드 검색</motion.button>
                 </div>
+                {type === 1 && (
+                    <>
+                    {chatRooms.length > 0 && (
+                        <ul className={classes.chatRoom_list}>
+                            <AnimatePresence>
+                                {chatRooms.map((item) => {
+                                    return (
+                                        <div key={item.roomId} className={classes.chatRoom_box_container}>
+                                            <motion.div 
+                                                className={classes.chatRoom_box} 
+                                                initial={{ opacity: 0, x: -100 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                exit={{ opacity: 0, x: 100 }}
+                                                transition={{ duration: 0.5, ease: "easeOut" }}
+                                            >
+                                                <div className={classes.chatRoom_card}>
+                                                    <div className={classes.chatRoom_header}>
+                                                        <h3 className={classes.chatRoom_title}>{item.title}</h3>
+                                                        <img className={classes.chatRoom_image} src={ChatImg} alt="chat_img" />
+                                                    </div>
+                                                    <div className={classes.chatRoom_info}>
+                                                        {item.isParticipate ? <p className={classes.chatRoom_isOpen}>참여중</p> : <p className={classes.chatRoom_isOpen}>참여 가능</p>}
+                                                        <p className={classes.chatRoom_members}>{item.memberCount}명 참여</p>
+                                                        <p className={classes.chatRoom_date}>{item.createdDateTime.split('T')[0]}</p>
+                                                    </div>
+                                                    {!item.isParticipate && (
+                                                        <div className={classes.chatRoom_buttons}>
+                                                            <button 
+                                                                onClick={() => participateNewChatRoomHandler(item.roomId)}
+                                                                className={classes.chatRoom_joinButton}>참여하기</button>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </motion.div>
+                                        </div>
+                                        )
+                                })}
+                            </AnimatePresence>
+                        </ul>
+                    )}
+                    {chatRooms.length === 0 && 
+                    <motion.p 
+                        className={classes.no_room_message}
+                        initial={{ opacity: 0, x: -100 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 100 }}
+                        transition={{ duration: 0.5, ease: "easeOut" }}>
+                            아직 등록된 채팅방이 없습니다. <br/>
+                            채팅방을 등록해보세요!
+                    </motion.p>}
+                    <div className={classes.createRoom_container_box}>
+                        <div className={classes.createRoom_container}>
+                            <p className={classes.createRoom_description}>찾으시는 채팅방이 없으신가요? <br/> 원하는 채팅방을 만들어보세요.</p>
+                            <h3 className={classes.createRoom_title}>채팅방 제목을 입력을 입력하세요.</h3>
+                            <input 
+                                onChange={titleChangeHandler}
+                                className={classes.createRoom_title_input} 
+                                type='text' value={title}/>
+                            <AnimatePresence>
+                                {isError && (
+                                    <motion.p
+                                        className={classes.error_message}
+                                        initial={{ opacity: 0, y: -5 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -5 }}
+                                    >
+                                        {errorMessage}
+                                    </motion.p>
+                                )}
+                            </AnimatePresence>
+                            <motion.button 
+                                whileHover={{ scale : 1.05 }} 
+                                className={classes.createRoom_submit_button} 
+                                onClick={createRoomHandler}>
+                                    채팅방 만들기</motion.button>
+                        </div>                
+                    </div>
+                    </>
+                )}
+                {type === 2 && <KeywordRoomForm 
+                    onChatExecute={props.onChatExecute}
+                    onNewChat={participateNewChatRoomHandler} memberId={memberId}/>}
             </div>
         </React.Fragment>
     )
