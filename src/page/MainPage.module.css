@@ -1,0 +1,13 @@
+.main_body {
+    margin: 0;
+    height: 100%;
+    background-color: #fef5e7; /* 부드러운 베이지 */
+    min-height: 100vh; /* 화면 전체 높이 확보 */
+    padding: 60px 20px;
+}
+
+.main_word {
+    font-weight: bold;
+    font-family: "Playwrite NZ", cursive !important;
+    margin-bottom: 40px;
+}
