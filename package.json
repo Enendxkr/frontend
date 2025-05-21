@@ -19,6 +19,7 @@
     "framer-motion": "^12.4.2",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.475.0",
+    "nahc-front-server": "file:",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.9",
     "react-dom": "^18.2.0",
